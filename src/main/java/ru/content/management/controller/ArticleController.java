@@ -22,8 +22,9 @@ public class ArticleController {
         this.articleService = articleService;
     }
 
-    @GetMapping("")
+    @GetMapping("/")
     @Operation(summary = "Получить все статьи")
+    @ResponseStatus(HttpStatus.OK)
     public List<ArticleDTO> findAll() {
         return articleService.findAll();
     }
