@@ -1,43 +1,52 @@
 package ru.content.management.service;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.content.management.entity.Article;
 import ru.content.management.repository.ArticleRepository;
+import ru.content.management.dto.ArticleDTO;
+import ru.content.management.dto.ArticleCreateDTO;
+import ru.content.management.dto.ArticleUpdateDTO;
+import ru.content.management.mapper.ArticleMapper;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class ArticleServiceImpl implements ArticleService {
 
-
     private final ArticleRepository articleRepository;
+    private final ArticleMapper articleMapper;
 
-    @Override
-    public List<Article> findAll() {
-        return articleRepository.findAll();
+    public ArticleServiceImpl(ArticleRepository articleRepository, ArticleMapper articleMapper) {
+        this.articleRepository = articleRepository;
+        this.articleMapper = articleMapper;
     }
 
     @Override
-    public Optional<Article> findById(Long id) {
-        return articleRepository.findById(id);
+    public List<ArticleDTO> findAll() {
+        return articleRepository.findAll().stream()
+                .map(articleMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Article create(Article article) {
-        return articleRepository.save(article);
+    public ArticleDTO findById(Long id) {
+        return articleRepository.findById(id)
+                .map(articleMapper::toDTO)
+                .orElseThrow(() -> new RuntimeException("Article not found"));
     }
 
     @Override
-    public Article update(Long id, Article article) {
+    public ArticleDTO create(ArticleCreateDTO dto) {
+        Article article = articleMapper.toEntityCreate(dto);
+        return articleMapper.toDTO(articleRepository.save(article));
+    }
+
+    @Override
+    public ArticleDTO update(Long id, ArticleUpdateDTO dto) {
         Article existing = articleRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Article not found"));
-        if (article.getTitle() != null) existing.setTitle(article.getTitle());
-        if (article.getText() != null) existing.setText(article.getText());
-        if (article.getAuthor() != null) existing.setAuthor(article.getAuthor());
-        if (article.getPublishedAt() != null) existing.setPublishedAt(article.getPublishedAt());
-        return articleRepository.save(existing);
+        articleMapper.updateEntity(dto, existing);
+        return articleMapper.toDTO(articleRepository.save(existing));
     }
 
     @Override

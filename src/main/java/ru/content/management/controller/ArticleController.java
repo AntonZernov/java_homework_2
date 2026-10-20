@@ -2,15 +2,18 @@ package ru.content.management.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.content.management.entity.Article;
+import ru.content.management.dto.ArticleDTO;
+import ru.content.management.dto.ArticleCreateDTO;
+import ru.content.management.dto.ArticleUpdateDTO;
 import ru.content.management.service.ArticleService;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/article")
-@Tag(name = "Статьи", description = "API для управления статьями")
+@Tag(name = "Article", description = "API для управления статьями")
 public class ArticleController {
 
     private final ArticleService articleService;
@@ -19,32 +22,36 @@ public class ArticleController {
         this.articleService = articleService;
     }
 
-    @GetMapping
+    @GetMapping("")
     @Operation(summary = "Получить все статьи")
-    public List<Article> findAll() {
+    public List<ArticleDTO> findAll() {
         return articleService.findAll();
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Получить статью по ID")
-    public Optional<Article> findById(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.OK)
+    public ArticleDTO findById(@PathVariable Long id) {
         return articleService.findById(id);
     }
 
-    @PostMapping
+    @PostMapping("/create")
     @Operation(summary = "Создать статью")
-    public Article create(@RequestBody Article article) {
-        return articleService.create(article);
+    @ResponseStatus(HttpStatus.CREATED)
+    public ArticleDTO create(@Valid @RequestBody ArticleCreateDTO dto) {
+        return articleService.create(dto);
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Обновить статью")
-    public Article update(@PathVariable Long id, @RequestBody Article article) {
-        return articleService.update(id, article);
+    @ResponseStatus(HttpStatus.OK)
+    public ArticleDTO update(@PathVariable Long id, @Valid @RequestBody ArticleUpdateDTO dto) {
+        return articleService.update(id, dto);
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Удалить статью")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
         articleService.delete(id);
     }
