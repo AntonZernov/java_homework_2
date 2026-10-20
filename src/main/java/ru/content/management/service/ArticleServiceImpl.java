@@ -2,7 +2,7 @@ package ru.content.management.service;
 
 import org.springframework.stereotype.Service;
 import ru.content.management.entity.Article;
-import ru.content.management.exception.DatabaseException;
+import ru.content.management.exception.EntityNotFoundException;
 import ru.content.management.repository.ArticleRepository;
 import ru.content.management.dto.ArticleDTO;
 import ru.content.management.dto.ArticleCreateDTO;
@@ -33,24 +33,19 @@ public class ArticleServiceImpl implements ArticleService {
     public ArticleDTO findById(Long id) {
         return articleRepository.findById(id)
                 .map(articleMapper::toDTO)
-                .orElseThrow(() -> new DatabaseException("Статья не найдена"));
+                .orElseThrow(() -> new EntityNotFoundException("Статья не найдена"));
     }
 
     @Override
     public ArticleDTO create(ArticleCreateDTO dto) {
-        try {
-            Article article = articleMapper.toEntityCreate(dto);
-            return articleMapper.toDTO(articleRepository.save(article));
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            throw new DatabaseException("Ошибка при сохранении статьи");
-        }
+        Article article = articleMapper.toEntityCreate(dto);
+        return articleMapper.toDTO(articleRepository.save(article));
     }
 
     @Override
     public ArticleDTO update(Long id, ArticleUpdateDTO dto) {
         Article existing = articleRepository.findById(id)
-                .orElseThrow(() -> new DatabaseException("Статья для редактирования не найдена"));
+                .orElseThrow(() -> new EntityNotFoundException("Статья для редактирования не найдена"));
         articleMapper.updateEntity(dto, existing);
         return articleMapper.toDTO(articleRepository.save(existing));
     }
