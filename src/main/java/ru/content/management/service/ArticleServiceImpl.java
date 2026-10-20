@@ -49,6 +49,9 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public void delete(Long id) {
+        if (!articleRepository.existsById(id)) {
+            throw new EntityNotFoundException("Статья для удаления не найдена");
+        }
         articleRepository.deleteById(id);
     }
 }
