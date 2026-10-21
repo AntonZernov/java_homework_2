@@ -5,6 +5,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 
 @UtilityClass
 public class SpecificationUtils {
@@ -29,24 +30,19 @@ public class SpecificationUtils {
      * @param durationTo конечное значение времени
      * @param durationField имя поля сущности
      */
-    public static <T> Specification<T> buildDurationSpec(String durationFrom, String durationTo, String durationField) {
-        if (StringUtils.hasText(durationFrom) && StringUtils.hasText(durationTo)) {
+    public static <T> Specification<T> buildDurationSpec(LocalTime durationFrom, LocalTime durationTo, String durationField) {
+        if (durationFrom != null && durationTo != null) {
             if (durationFrom.equals(durationTo)) {
-                LocalTime time = LocalTime.parse(durationFrom);
-                return (root, query, cb) -> cb.equal(root.get(durationField), time);
+                return (root, query, cb) -> cb.equal(root.get(durationField), durationFrom);
             }
-            LocalTime from = LocalTime.parse(durationFrom);
-            LocalTime to = LocalTime.parse(durationTo);
             return (root, query, cb) -> cb.and(
-                    cb.greaterThanOrEqualTo(root.get(durationField), from),
-                    cb.lessThanOrEqualTo(root.get(durationField), to)
+                    cb.greaterThanOrEqualTo(root.get(durationField), durationFrom),
+                    cb.lessThanOrEqualTo(root.get(durationField), durationTo)
             );
         }
-        if (StringUtils.hasText(durationFrom)) {
-            LocalTime from = LocalTime.parse(durationFrom);
-            return (root, query, cb) -> cb.greaterThanOrEqualTo(root.get(durationField), from);
+        if (durationFrom != null) {
+            return (root, query, cb) -> cb.greaterThanOrEqualTo(root.get(durationField), durationFrom);
         }
-        LocalTime to = LocalTime.parse(durationTo);
-        return (root, query, cb) -> cb.lessThanOrEqualTo(root.get(durationField), to);
+        return (root, query, cb) -> cb.lessThanOrEqualTo(root.get(durationField), durationTo);
     }
 }

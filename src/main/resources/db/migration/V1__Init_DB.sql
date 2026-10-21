@@ -10,7 +10,7 @@ CREATE TABLE videos (
     id BIGSERIAL PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     url VARCHAR(1024) NOT NULL,
-    duration TIME NOT NULL
+    duration TIME(0) NOT NULL
 );
 
 CREATE TABLE podcasts (

@@ -12,6 +12,8 @@ import ru.content.management.exception.EntityNotFoundException;
 import ru.content.management.utils.SpecificationUtils;
 import ru.content.management.utils.VideoMapper;
 import ru.content.management.repository.VideoRepository;
+
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,7 +31,7 @@ public class VideoServiceImpl implements VideoService {
     }
 
     @Override
-    public List<VideoDTO> find(String title, String url, String durationFrom, String durationTo) {
+    public List<VideoDTO> find(String title, String url, LocalTime durationFrom, LocalTime durationTo) {
         Specification<Video> spec = Specification.where(null);
 
         if (StringUtils.hasText(title)) {
@@ -40,7 +42,7 @@ public class VideoServiceImpl implements VideoService {
             spec = spec.and(SpecificationUtils.buildLikeSpec(url, "url"));
         }
 
-        if (StringUtils.hasText(durationFrom) || StringUtils.hasText(durationTo)) {
+        if (durationFrom != null || durationTo != null) {
             spec = spec.and(SpecificationUtils.buildDurationSpec(durationFrom, durationTo, "duration"));
         }
 

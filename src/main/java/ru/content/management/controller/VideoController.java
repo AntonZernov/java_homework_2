@@ -3,12 +3,16 @@ package ru.content.management.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.content.management.dto.VideoCreateDTO;
 import ru.content.management.dto.VideoDTO;
 import ru.content.management.dto.VideoUpdateDTO;
 import ru.content.management.service.VideoService;
+
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @RestController
@@ -28,8 +32,10 @@ public class VideoController {
     public List<VideoDTO> find(
             @RequestParam(required = false) String title,
             @RequestParam(required = false) String url,
-            @RequestParam(required = false) String durationFrom,
-            @RequestParam(required = false) String durationTo) {
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime durationFrom,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime durationTo) {
+        LocalTime cleanFrom = durationFrom != null ? durationFrom.truncatedTo(ChronoUnit.SECONDS) : null;
+        LocalTime cleanTo = durationTo != null ? durationTo.truncatedTo(ChronoUnit.SECONDS) : null;
         return videoService.find(title, url, durationFrom, durationTo);
     }
 

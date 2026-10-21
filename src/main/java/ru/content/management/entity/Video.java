@@ -18,6 +18,6 @@ public class Video {
     @Column(nullable = false)
     private String url;
 
-    @Column(name = "duration", nullable = false)
+    @Column(name = "duration", nullable = false, columnDefinition = "TIME(0)")
     private LocalTime duration;
 }
