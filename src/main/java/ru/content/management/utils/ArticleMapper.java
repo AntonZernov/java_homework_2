@@ -1,13 +1,13 @@
-package ru.content.management.mapper;
+package ru.content.management.utils;
 
-import org.springframework.stereotype.Component;
+import lombok.experimental.UtilityClass;
 import ru.content.management.entity.Article;
 import ru.content.management.dto.ArticleDTO;
 import ru.content.management.dto.ArticleCreateDTO;
 import ru.content.management.dto.ArticleUpdateDTO;
 import java.time.LocalDateTime;
 
-@Component
+@UtilityClass
 public class ArticleMapper {
 
     public Article toEntity(ArticleDTO dto) {

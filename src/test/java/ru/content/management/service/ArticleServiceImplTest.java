@@ -4,14 +4,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.content.management.dto.ArticleCreateDTO;
 import ru.content.management.dto.ArticleDTO;
 import ru.content.management.dto.ArticleUpdateDTO;
 import ru.content.management.entity.Article;
 import ru.content.management.exception.EntityNotFoundException;
-import ru.content.management.mapper.ArticleMapper;
 import ru.content.management.repository.ArticleRepository;
+import ru.content.management.utils.ArticleMapper;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,11 +28,25 @@ class ArticleServiceImplTest {
     @Mock
     private ArticleRepository articleRepository;
 
-    @Mock
-    private ArticleMapper articleMapper;
-
     @InjectMocks
     private ArticleServiceImpl articleService;
+
+    @Test
+    void findAllSuccessAllTest() {
+        Article article = createArticle();
+        ArticleDTO dto = createArticleDTO();
+
+        when(articleRepository.findAll()).thenReturn(List.of(article));
+        try (MockedStatic<ArticleMapper> mockedMapper = Mockito.mockStatic(ArticleMapper.class)) {
+            mockedMapper.when(() -> ArticleMapper.toDTO(article)).thenReturn(dto);
+
+            List<ArticleDTO> result = articleService.findAll();
+
+            assertEquals(1, result.size());
+            assertEquals("Test Title", result.get(0).getTitle());
+            verify(articleRepository).findAll();
+        }
+    }
 
     private Article createArticle() {
         Article article = new Article();
@@ -53,22 +69,6 @@ class ArticleServiceImplTest {
     }
 
     @Test
-    void findAllSuccessAllTest() {
-        Article article = createArticle();
-        ArticleDTO dto = createArticleDTO();
-
-        when(articleRepository.findAll()).thenReturn(List.of(article));
-        when(articleMapper.toDTO(article)).thenReturn(dto);
-
-        List<ArticleDTO> result = articleService.findAll();
-
-        assertEquals(1, result.size());
-        assertEquals("Test Title", result.get(0).getTitle());
-        verify(articleRepository).findAll();
-        verify(articleMapper).toDTO(article);
-    }
-
-    @Test
     void findAllSuccessEmptyTest() {
         when(articleRepository.findAll()).thenReturn(List.of());
 
@@ -84,13 +84,13 @@ class ArticleServiceImplTest {
         ArticleDTO dto = createArticleDTO();
 
         when(articleRepository.findById(1L)).thenReturn(java.util.Optional.of(article));
-        when(articleMapper.toDTO(article)).thenReturn(dto);
-
-        ArticleDTO result = articleService.findById(1L);
-
-        assertNotNull(result);
-        assertEquals("Test Title", result.getTitle());
-        verify(articleRepository).findById(1L);
+        try (MockedStatic<ArticleMapper> mockedMapper = Mockito.mockStatic(ArticleMapper.class)) {
+            mockedMapper.when(() -> ArticleMapper.toDTO(article)).thenReturn(dto);
+            ArticleDTO result = articleService.findById(1L);
+            assertNotNull(result);
+            assertEquals("Test Title", result.getTitle());
+            verify(articleRepository).findById(1L);
+        }
     }
 
     @Test
@@ -124,18 +124,17 @@ class ArticleServiceImplTest {
         savedDTO.setText("New Text");
         savedDTO.setAuthor("New Author");
         savedDTO.setPublishedAt(entity.getPublishedAt());
+        try (MockedStatic<ArticleMapper> mockedMapper = Mockito.mockStatic(ArticleMapper.class)) {
+            mockedMapper.when(() -> ArticleMapper.toEntityCreate(createDTO)).thenReturn(entity);
+            when(articleRepository.save(entity)).thenReturn(entity);
+            when(ArticleMapper.toDTO(entity)).thenReturn(savedDTO);
 
-        when(articleMapper.toEntityCreate(createDTO)).thenReturn(entity);
-        when(articleRepository.save(entity)).thenReturn(entity);
-        when(articleMapper.toDTO(entity)).thenReturn(savedDTO);
+            ArticleDTO result = articleService.create(createDTO);
 
-        ArticleDTO result = articleService.create(createDTO);
-
-        assertNotNull(result);
-        assertEquals(1L, result.getId());
-        verify(articleMapper).toEntityCreate(createDTO);
-        verify(articleRepository).save(entity);
-        verify(articleMapper).toDTO(entity);
+            assertNotNull(result);
+            assertEquals(1L, result.getId());
+            verify(articleRepository).save(entity);
+        }
     }
 
     @Test
@@ -162,15 +161,17 @@ class ArticleServiceImplTest {
 
         when(articleRepository.findById(1L)).thenReturn(java.util.Optional.of(existing));
         when(articleRepository.save(existing)).thenReturn(saved);
-        when(articleMapper.toDTO(saved)).thenReturn(savedDTO);
+        try (MockedStatic<ArticleMapper> mockedMapper = Mockito.mockStatic(ArticleMapper.class)) {
+            mockedMapper.when(() -> ArticleMapper.toDTO(saved)).thenReturn(savedDTO);
 
-        ArticleDTO result = articleService.update(1L, updateDTO);
+            ArticleDTO result = articleService.update(1L, updateDTO);
 
-        assertNotNull(result);
-        assertEquals("Updated Title", result.getTitle());
-        assertEquals("Updated Text", result.getText());
-        verify(articleRepository).findById(1L);
-        verify(articleRepository).save(existing);
+            assertNotNull(result);
+            assertEquals("Updated Title", result.getTitle());
+            assertEquals("Updated Text", result.getText());
+            verify(articleRepository).findById(1L);
+            verify(articleRepository).save(existing);
+        }
     }
 
     @Test
@@ -211,13 +212,15 @@ class ArticleServiceImplTest {
 
         when(articleRepository.findById(1L)).thenReturn(java.util.Optional.of(existing));
         when(articleRepository.save(existing)).thenReturn(saved);
-        when(articleMapper.toDTO(saved)).thenReturn(savedDTO);
+        try (MockedStatic<ArticleMapper> mockedMapper = Mockito.mockStatic(ArticleMapper.class)) {
+            mockedMapper.when(() -> ArticleMapper.toDTO(saved)).thenReturn(savedDTO);
 
-        ArticleDTO result = articleService.update(1L, updateDTO);
+            ArticleDTO result = articleService.update(1L, updateDTO);
 
-        assertNotNull(result);
-        assertEquals("Updated Title", result.getTitle());
-        assertEquals("Test Text", result.getText());
+            assertNotNull(result);
+            assertEquals("Updated Title", result.getTitle());
+            assertEquals("Test Text", result.getText());
+        }
     }
 
     @Test

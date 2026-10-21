@@ -8,7 +8,7 @@ import ru.content.management.repository.ArticleRepository;
 import ru.content.management.dto.ArticleDTO;
 import ru.content.management.dto.ArticleCreateDTO;
 import ru.content.management.dto.ArticleUpdateDTO;
-import ru.content.management.mapper.ArticleMapper;
+import ru.content.management.utils.ArticleMapper;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,34 +17,33 @@ import java.util.stream.Collectors;
 public class ArticleServiceImpl implements ArticleService {
 
     private final ArticleRepository articleRepository;
-    private final ArticleMapper articleMapper;
 
     @Override
     public List<ArticleDTO> findAll() {
         return articleRepository.findAll().stream()
-                .map(articleMapper::toDTO)
+                .map(ArticleMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
     public ArticleDTO findById(Long id) {
         return articleRepository.findById(id)
-                .map(articleMapper::toDTO)
+                .map(ArticleMapper::toDTO)
                 .orElseThrow(() -> new EntityNotFoundException("Статья не найдена"));
     }
 
     @Override
     public ArticleDTO create(ArticleCreateDTO dto) {
-        Article article = articleMapper.toEntityCreate(dto);
-        return articleMapper.toDTO(articleRepository.save(article));
+        Article article = ArticleMapper.toEntityCreate(dto);
+        return ArticleMapper.toDTO(articleRepository.save(article));
     }
 
     @Override
     public ArticleDTO update(Long id, ArticleUpdateDTO dto) {
         Article existing = articleRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Статья для редактирования не найдена"));
-        articleMapper.updateEntity(dto, existing);
-        return articleMapper.toDTO(articleRepository.save(existing));
+        ArticleMapper.updateEntity(dto, existing);
+        return ArticleMapper.toDTO(articleRepository.save(existing));
     }
 
     @Override

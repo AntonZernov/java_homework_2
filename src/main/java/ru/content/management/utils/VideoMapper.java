@@ -1,12 +1,12 @@
-package ru.content.management.mapper;
+package ru.content.management.utils;
 
-import org.springframework.stereotype.Component;
+import lombok.experimental.UtilityClass;
 import ru.content.management.dto.VideoCreateDTO;
 import ru.content.management.dto.VideoDTO;
 import ru.content.management.dto.VideoUpdateDTO;
 import ru.content.management.entity.Video;
 
-@Component
+@UtilityClass
 public class VideoMapper {
 
     public Video toEntity(VideoDTO dto) {
