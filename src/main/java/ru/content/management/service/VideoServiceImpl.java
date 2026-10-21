@@ -2,6 +2,8 @@ package ru.content.management.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.data.jpa.domain.Specification;
 import ru.content.management.dto.VideoCreateDTO;
 import ru.content.management.dto.VideoDTO;
 import ru.content.management.dto.VideoUpdateDTO;
@@ -9,6 +11,7 @@ import ru.content.management.entity.Video;
 import ru.content.management.exception.EntityNotFoundException;
 import ru.content.management.mapper.VideoMapper;
 import ru.content.management.repository.VideoRepository;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,6 +25,42 @@ public class VideoServiceImpl implements VideoService {
     @Override
     public List<VideoDTO> findAll() {
         return videoRepository.findAll().stream()
+                .map(videoMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<VideoDTO> find(String title, String url, String durationFrom, String durationTo) {
+        Specification<Video> spec = Specification.where(null);
+
+        if (StringUtils.hasText(title)) {
+            spec = spec.and((root, query, cb) -> cb.like(cb.lower(root.get("title")), "%" + title.toLowerCase() + "%"));
+        }
+
+        if (StringUtils.hasText(url)) {
+            spec = spec.and((root, query, cb) -> cb.like(cb.lower(root.get("url")), "%" + url.toLowerCase() + "%"));
+        }
+
+        if (StringUtils.hasText(durationFrom) && StringUtils.hasText(durationTo)) {
+            if (durationFrom.equals(durationTo)) {
+                spec = spec.and((root, query, cb) -> cb.equal(root.get("duration"), LocalTime.parse(durationFrom)));
+            } else {
+                LocalTime from = LocalTime.parse(durationFrom);
+                LocalTime to = LocalTime.parse(durationTo);
+                spec = spec.and((root, query, cb) -> cb.and(
+                        cb.greaterThanOrEqualTo(root.get("duration"), from),
+                        cb.lessThanOrEqualTo(root.get("duration"), to)
+                ));
+            }
+        } else if (StringUtils.hasText(durationFrom)) {
+            LocalTime from = LocalTime.parse(durationFrom);
+            spec = spec.and((root, query, cb) -> cb.greaterThanOrEqualTo(root.get("duration"), from));
+        } else if (StringUtils.hasText(durationTo)) {
+            LocalTime to = LocalTime.parse(durationTo);
+            spec = spec.and((root, query, cb) -> cb.lessThanOrEqualTo(root.get("duration"), to));
+        }
+
+        return videoRepository.findAll(spec).stream()
                 .map(videoMapper::toDTO)
                 .collect(Collectors.toList());
     }

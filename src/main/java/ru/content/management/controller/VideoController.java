@@ -22,11 +22,15 @@ public class VideoController {
         this.videoService = videoService;
     }
 
-    @GetMapping("/")
-    @Operation(summary = "Получить все видео")
+    @GetMapping("/find")
+    @Operation(summary = "Поиск видео")
     @ResponseStatus(HttpStatus.OK)
-    public List<VideoDTO> findAll() {
-        return videoService.findAll();
+    public List<VideoDTO> find(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String url,
+            @RequestParam(required = false) String durationFrom,
+            @RequestParam(required = false) String durationTo) {
+        return videoService.find(title, url, durationFrom, durationTo);
     }
 
     @GetMapping("/{id}")
