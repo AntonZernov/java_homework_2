@@ -34,30 +34,15 @@ public class VideoServiceImpl implements VideoService {
         Specification<Video> spec = Specification.where(null);
 
         if (StringUtils.hasText(title)) {
-            spec = spec.and((root, query, cb) -> cb.like(cb.lower(root.get("title")), "%" + title.toLowerCase() + "%"));
+            spec = spec.and(buildTitleSpec(title));
         }
 
         if (StringUtils.hasText(url)) {
-            spec = spec.and((root, query, cb) -> cb.like(cb.lower(root.get("url")), "%" + url.toLowerCase() + "%"));
+            spec = spec.and(buildUrlSpec(url));
         }
 
-        if (StringUtils.hasText(durationFrom) && StringUtils.hasText(durationTo)) {
-            if (durationFrom.equals(durationTo)) {
-                spec = spec.and((root, query, cb) -> cb.equal(root.get("duration"), LocalTime.parse(durationFrom)));
-            } else {
-                LocalTime from = LocalTime.parse(durationFrom);
-                LocalTime to = LocalTime.parse(durationTo);
-                spec = spec.and((root, query, cb) -> cb.and(
-                        cb.greaterThanOrEqualTo(root.get("duration"), from),
-                        cb.lessThanOrEqualTo(root.get("duration"), to)
-                ));
-            }
-        } else if (StringUtils.hasText(durationFrom)) {
-            LocalTime from = LocalTime.parse(durationFrom);
-            spec = spec.and((root, query, cb) -> cb.greaterThanOrEqualTo(root.get("duration"), from));
-        } else if (StringUtils.hasText(durationTo)) {
-            LocalTime to = LocalTime.parse(durationTo);
-            spec = spec.and((root, query, cb) -> cb.lessThanOrEqualTo(root.get("duration"), to));
+        if (StringUtils.hasText(durationFrom) || StringUtils.hasText(durationTo)) {
+            spec = spec.and(buildDurationSpec(durationFrom, durationTo));
         }
 
         return videoRepository.findAll(spec).stream()
@@ -93,5 +78,34 @@ public class VideoServiceImpl implements VideoService {
             throw new EntityNotFoundException("Видео для удаления не найдено");
         }
         videoRepository.deleteById(id);
+    }
+
+    private Specification<Video> buildTitleSpec(String title) {
+        return (root, query, cb) -> cb.like(cb.lower(root.get("title")), "%" + title.toLowerCase() + "%");
+    }
+
+    private Specification<Video> buildUrlSpec(String url) {
+        return (root, query, cb) -> cb.like(cb.lower(root.get("url")), "%" + url.toLowerCase() + "%");
+    }
+
+    private Specification<Video> buildDurationSpec(String durationFrom, String durationTo) {
+        if (StringUtils.hasText(durationFrom) && StringUtils.hasText(durationTo)) {
+            if (durationFrom.equals(durationTo)) {
+                LocalTime time = LocalTime.parse(durationFrom);
+                return (root, query, cb) -> cb.equal(root.get("duration"), time);
+            }
+            LocalTime from = LocalTime.parse(durationFrom);
+            LocalTime to = LocalTime.parse(durationTo);
+            return (root, query, cb) -> cb.and(
+                    cb.greaterThanOrEqualTo(root.get("duration"), from),
+                    cb.lessThanOrEqualTo(root.get("duration"), to)
+            );
+        }
+        if (StringUtils.hasText(durationFrom)) {
+            LocalTime from = LocalTime.parse(durationFrom);
+            return (root, query, cb) -> cb.greaterThanOrEqualTo(root.get("duration"), from);
+        }
+        LocalTime to = LocalTime.parse(durationTo);
+        return (root, query, cb) -> cb.lessThanOrEqualTo(root.get("duration"), to);
     }
 }
