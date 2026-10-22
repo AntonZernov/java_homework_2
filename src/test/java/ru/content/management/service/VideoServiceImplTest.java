@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.jpa.domain.Specification;
 import ru.content.management.dto.VideoCreateDTO;
@@ -54,13 +55,15 @@ class VideoServiceImplTest {
         VideoDTO dto = createVideoDTO();
 
         when(videoRepository.findAll((Specification<Video>) any())).thenReturn(List.of(video));
-        when(VideoMapper.toDTO(video)).thenReturn(dto);
+        try (MockedStatic<VideoMapper> mockedMapper = mockStatic(VideoMapper.class)) {
+            mockedMapper.when(() -> VideoMapper.toDTO(video)).thenReturn(dto);
 
-        List<VideoDTO> result = videoService.find(null, null, null, null);
+            List<VideoDTO> result = videoService.find(null, null, null, null);
 
-        assertEquals(1, result.size());
-        assertEquals("Test Title", result.getFirst().getTitle());
-        verify(videoRepository).findAll((Specification<Video>)any());
+            assertEquals(1, result.size());
+            assertEquals("Test Title", result.getFirst().getTitle());
+            verify(videoRepository).findAll((Specification<Video>) any());
+        }
     }
 
     @Test
@@ -80,13 +83,15 @@ class VideoServiceImplTest {
         VideoDTO dto = createVideoDTO();
 
         when(videoRepository.findById(1L)).thenReturn(java.util.Optional.of(video));
-        when(VideoMapper.toDTO(video)).thenReturn(dto);
+        try (MockedStatic<VideoMapper> mockedMapper = mockStatic(VideoMapper.class)) {
+            mockedMapper.when(() -> VideoMapper.toDTO(video)).thenReturn(dto);
 
-        VideoDTO result = videoService.findById(1L);
+            VideoDTO result = videoService.findById(1L);
 
-        assertNotNull(result);
-        assertEquals("Test Title", result.getTitle());
-        verify(videoRepository).findById(1L);
+            assertNotNull(result);
+            assertEquals("Test Title", result.getTitle());
+            verify(videoRepository).findById(1L);
+        }
     }
 
     @Test
@@ -118,16 +123,17 @@ class VideoServiceImplTest {
         savedDTO.setTitle("New Title");
         savedDTO.setUrl("https://example.com/new");
         savedDTO.setDuration(LocalTime.of(0, 10, 0));
+        try (MockedStatic<VideoMapper> mockedMapper = mockStatic(VideoMapper.class)) {
+            mockedMapper.when(() -> VideoMapper.toEntityCreate(createDTO)).thenReturn(entity);
+            when(videoRepository.save(entity)).thenReturn(entity);
+            when(VideoMapper.toDTO(entity)).thenReturn(savedDTO);
 
-        when(VideoMapper.toEntityCreate(createDTO)).thenReturn(entity);
-        when(videoRepository.save(entity)).thenReturn(entity);
-        when(VideoMapper.toDTO(entity)).thenReturn(savedDTO);
+            VideoDTO result = videoService.create(createDTO);
 
-        VideoDTO result = videoService.create(createDTO);
-
-        assertNotNull(result);
-        assertEquals(1L, result.getId());
-        verify(videoRepository).save(entity);
+            assertNotNull(result);
+            assertEquals(1L, result.getId());
+            verify(videoRepository).save(entity);
+        }
     }
 
     @Test
@@ -152,15 +158,18 @@ class VideoServiceImplTest {
 
         when(videoRepository.findById(1L)).thenReturn(java.util.Optional.of(existing));
         when(videoRepository.save(existing)).thenReturn(saved);
-        when(VideoMapper.toDTO(saved)).thenReturn(savedDTO);
+        try (MockedStatic<VideoMapper> mockedMapper = mockStatic(VideoMapper.class)) {
+            mockedMapper.when(() -> VideoMapper.toDTO(saved)).thenReturn(savedDTO);
 
-        VideoDTO result = videoService.update(1L, updateDTO);
+            VideoDTO result = videoService.update(1L, updateDTO);
 
-        assertNotNull(result);
-        assertEquals("Updated Title", result.getTitle());
-        assertEquals("https://example.com/updated", result.getUrl());
-        verify(videoRepository).findById(1L);
-        verify(videoRepository).save(existing);
+            assertNotNull(result);
+            assertEquals("Updated Title", result.getTitle());
+            assertEquals("https://example.com/updated", result.getUrl());
+            verify(videoRepository).findById(1L);
+            verify(videoRepository).save(existing);
+        }
+
     }
 
     @Test
@@ -199,13 +208,16 @@ class VideoServiceImplTest {
 
         when(videoRepository.findById(1L)).thenReturn(java.util.Optional.of(existing));
         when(videoRepository.save(existing)).thenReturn(saved);
-        when(VideoMapper.toDTO(saved)).thenReturn(savedDTO);
 
-        VideoDTO result = videoService.update(1L, updateDTO);
+        try (MockedStatic<VideoMapper> mockedMapper = mockStatic(VideoMapper.class)) {
+            mockedMapper.when(() -> VideoMapper.toDTO(saved)).thenReturn(savedDTO);
 
-        assertNotNull(result);
-        assertEquals("Updated Title", result.getTitle());
-        assertEquals("https://example.com/video", result.getUrl());
+            VideoDTO result = videoService.update(1L, updateDTO);
+
+            assertNotNull(result);
+            assertEquals("Updated Title", result.getTitle());
+            assertEquals("https://example.com/video", result.getUrl());
+        }
     }
 
     @Test
