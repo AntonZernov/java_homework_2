@@ -3,6 +3,7 @@ package ru.content.management.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.content.management.dto.ArticleDTO;
@@ -22,11 +23,13 @@ public class ArticleController {
         this.articleService = articleService;
     }
 
-    @GetMapping("/")
-    @Operation(summary = "Получить все статьи")
+    @GetMapping("/find")
+    @Operation(summary = "Поиск статей")
     @ResponseStatus(HttpStatus.OK)
-    public List<ArticleDTO> findAll() {
-        return articleService.findAll();
+    public List<ArticleDTO> find(
+            @RequestParam(required = false) @Size(max = 255) String title,
+            @RequestParam(required = false) @Size(max = 150) String author) {
+        return articleService.find(title, author);
     }
 
     @GetMapping("/{id}")

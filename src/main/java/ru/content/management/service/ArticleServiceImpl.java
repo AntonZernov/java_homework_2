@@ -2,6 +2,8 @@ package ru.content.management.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.data.jpa.domain.Specification;
 import ru.content.management.entity.Article;
 import ru.content.management.exception.EntityNotFoundException;
 import ru.content.management.repository.ArticleRepository;
@@ -9,6 +11,7 @@ import ru.content.management.dto.ArticleDTO;
 import ru.content.management.dto.ArticleCreateDTO;
 import ru.content.management.dto.ArticleUpdateDTO;
 import ru.content.management.utils.ArticleMapper;
+import ru.content.management.utils.SpecificationUtils;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,8 +22,18 @@ public class ArticleServiceImpl implements ArticleService {
     private final ArticleRepository articleRepository;
 
     @Override
-    public List<ArticleDTO> findAll() {
-        return articleRepository.findAll().stream()
+    public List<ArticleDTO> find(String title, String author) {
+        Specification<Article> spec = Specification.where(null);
+
+        if (StringUtils.hasText(title)) {
+            spec = spec.and(SpecificationUtils.buildLikeSpec(title, "title"));
+        }
+
+        if (StringUtils.hasText(author)) {
+            spec = spec.and(SpecificationUtils.buildLikeSpec(author, "author"));
+        }
+
+        return articleRepository.findAll(spec).stream()
                 .map(ArticleMapper::toDTO)
                 .collect(Collectors.toList());
     }

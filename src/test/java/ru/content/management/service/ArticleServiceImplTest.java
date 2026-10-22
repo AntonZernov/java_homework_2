@@ -21,6 +21,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
+import org.springframework.data.jpa.domain.Specification;
 
 @ExtendWith(MockitoExtension.class)
 class ArticleServiceImplTest {
@@ -32,19 +33,20 @@ class ArticleServiceImplTest {
     private ArticleServiceImpl articleService;
 
     @Test
-    void findAllSuccessAllTest() {
+    @SuppressWarnings("unchecked")
+    void findSuccessTest() {
         Article article = createArticle();
         ArticleDTO dto = createArticleDTO();
 
-        when(articleRepository.findAll()).thenReturn(List.of(article));
+        when(articleRepository.findAll((Specification<Article>) any())).thenReturn(List.of(article));
         try (MockedStatic<ArticleMapper> mockedMapper = Mockito.mockStatic(ArticleMapper.class)) {
             mockedMapper.when(() -> ArticleMapper.toDTO(article)).thenReturn(dto);
 
-            List<ArticleDTO> result = articleService.findAll();
+            List<ArticleDTO> result = articleService.find(null, null);
 
             assertEquals(1, result.size());
-            assertEquals("Test Title", result.get(0).getTitle());
-            verify(articleRepository).findAll();
+            assertEquals("Test Title", result.getFirst().getTitle());
+            verify(articleRepository).findAll((Specification<Article>) any());
         }
     }
 
@@ -69,13 +71,14 @@ class ArticleServiceImplTest {
     }
 
     @Test
-    void findAllSuccessEmptyTest() {
-        when(articleRepository.findAll()).thenReturn(List.of());
+    @SuppressWarnings("unchecked")
+    void findSuccessEmptyTest() {
+        when(articleRepository.findAll((Specification<Article>) any())).thenReturn(List.of());
 
-        List<ArticleDTO> result = articleService.findAll();
+        List<ArticleDTO> result = articleService.find(null, null);
 
         assertTrue(result.isEmpty());
-        verify(articleRepository).findAll();
+        verify(articleRepository).findAll((Specification<Article>) any());
     }
 
     @Test

@@ -6,7 +6,7 @@ import ru.content.management.dto.ArticleUpdateDTO;
 import java.util.List;
 
 public interface ArticleService {
-    List<ArticleDTO> findAll();
+    List<ArticleDTO> find(String title, String author);
     ArticleDTO findById(Long id);
     ArticleDTO create(ArticleCreateDTO dto);
     ArticleDTO update(Long id, ArticleUpdateDTO dto);

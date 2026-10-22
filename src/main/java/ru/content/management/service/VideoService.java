@@ -8,7 +8,6 @@ import java.time.LocalTime;
 import java.util.List;
 
 public interface VideoService {
-    List<VideoDTO> findAll();
     List<VideoDTO> find(String title, String url, LocalTime durationFrom, LocalTime durationTo);
     VideoDTO findById(Long id);
     VideoDTO create(VideoCreateDTO dto);

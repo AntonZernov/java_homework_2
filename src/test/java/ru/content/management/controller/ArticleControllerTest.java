@@ -17,8 +17,7 @@ import ru.content.management.service.ArticleService;
 
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -40,9 +39,9 @@ class ArticleControllerTest {
     @Test
     void findAllSuccessTest() throws Exception {
         ArticleDTO article = new ArticleDTO();
-        given(articleService.findAll()).willReturn(List.of(article));
+        given(articleService.find(null, null)).willReturn(List.of(article));
 
-        mockMvc.perform(get("/article/"))
+        mockMvc.perform(get("/article/find"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray());
     }

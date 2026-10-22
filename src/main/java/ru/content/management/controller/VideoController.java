@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
+import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -19,13 +20,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/video")
 @Tag(name = "Video", description = "API для управления видео")
+@RequiredArgsConstructor
 public class VideoController {
 
     private final VideoService videoService;
-
-    public VideoController(VideoService videoService) {
-        this.videoService = videoService;
-    }
 
     @GetMapping("/find")
     @Operation(summary = "Поиск видео")

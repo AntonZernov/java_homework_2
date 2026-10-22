@@ -24,13 +24,6 @@ public class VideoServiceImpl implements VideoService {
     private final VideoRepository videoRepository;
 
     @Override
-    public List<VideoDTO> findAll() {
-        return videoRepository.findAll().stream()
-                .map(VideoMapper::toDTO)
-                .collect(Collectors.toList());
-    }
-
-    @Override
     public List<VideoDTO> find(String title, String url, LocalTime durationFrom, LocalTime durationTo) {
         Specification<Video> spec = Specification.where(null);
 
