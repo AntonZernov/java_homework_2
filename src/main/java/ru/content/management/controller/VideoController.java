@@ -29,7 +29,7 @@ public class VideoController {
     @Operation(summary = "Поиск видео")
     @ResponseStatus(HttpStatus.OK)
     public List<VideoDTO> find(
-            @RequestParam(required = false) @Size(max = 2) String title,
+            @RequestParam(required = false) @Size(max = 255) String title,
             @RequestParam(required = false) @Size(max = 1024) String url,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime durationFrom,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime durationTo) {
