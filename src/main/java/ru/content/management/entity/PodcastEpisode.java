@@ -2,6 +2,7 @@ package ru.content.management.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import java.time.LocalTime;
 
 @Data
 @Entity
@@ -23,6 +24,6 @@ public class PodcastEpisode {
     @Column(name = "audio_url", nullable = false)
     private String audioUrl;
 
-    @Column(name = "duration_seconds", nullable = false)
-    private Integer durationSeconds;
+    @Column(name = "duration", nullable = false, columnDefinition = "TIME(0)")
+    private LocalTime duration;
 }

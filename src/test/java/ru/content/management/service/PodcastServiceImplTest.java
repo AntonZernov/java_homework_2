@@ -20,6 +20,7 @@ import ru.content.management.repository.PodcastRepository;
 import ru.content.management.utils.PodcastEpisodeMapper;
 import ru.content.management.utils.PodcastMapper;
 
+import java.time.LocalTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -241,7 +242,7 @@ class PodcastServiceImplTest {
         createDTO.setEpisodeNumber(1);
         createDTO.setTitle("New Episode");
         createDTO.setAudioUrl("http://example.com/audio.mp3");
-        createDTO.setDurationSeconds(1200);
+        createDTO.setDuration(LocalTime.of(0, 4, 24));
 
         Podcast podcast = createPodcast();
         PodcastEpisode episode = new PodcastEpisode();
@@ -249,7 +250,7 @@ class PodcastServiceImplTest {
         episode.setEpisodeNumber(1);
         episode.setTitle("New Episode");
         episode.setAudioUrl("http://example.com/audio.mp3");
-        episode.setDurationSeconds(1200);
+        episode.setDuration(LocalTime.of(0, 4, 24));
 
         PodcastEpisodeDTO savedDTO = new PodcastEpisodeDTO();
         savedDTO.setId(1L);
@@ -257,7 +258,7 @@ class PodcastServiceImplTest {
         savedDTO.setEpisodeNumber(1);
         savedDTO.setTitle("New Episode");
         savedDTO.setAudioUrl("http://example.com/audio.mp3");
-        savedDTO.setDurationSeconds(1200);
+        savedDTO.setDuration(LocalTime.of(0, 4, 24));
 
         when(podcastRepository.existsById(1L)).thenReturn(true);
         when(podcastEpisodeRepository.save(episode)).thenReturn(episode);
@@ -280,7 +281,7 @@ class PodcastServiceImplTest {
         createDTO.setEpisodeNumber(1);
         createDTO.setTitle("New Episode");
         createDTO.setAudioUrl("http://example.com/audio.mp3");
-        createDTO.setDurationSeconds(1200);
+        createDTO.setDuration(LocalTime.of(0, 4, 24));
 
         when(podcastRepository.existsById(99L)).thenReturn(false);
 
@@ -300,7 +301,7 @@ class PodcastServiceImplTest {
         episode.setEpisodeNumber(1);
         episode.setTitle("Episode 1");
         episode.setAudioUrl("http://example.com/audio.mp3");
-        episode.setDurationSeconds(1200);
+        episode.setDuration(LocalTime.of(0, 4, 24));
         return episode;
     }
 
@@ -311,7 +312,7 @@ class PodcastServiceImplTest {
         dto.setEpisodeNumber(1);
         dto.setTitle("Episode 1");
         dto.setAudioUrl("http://example.com/audio.mp3");
-        dto.setDurationSeconds(1200);
+        dto.setDuration(LocalTime.of(0, 4, 24));
         return dto;
     }
 }

@@ -17,6 +17,7 @@ import ru.content.management.exception.EntityNotFoundException;
 import ru.content.management.exception.GlobalExceptionHandler;
 import ru.content.management.service.PodcastService;
 
+import java.time.LocalTime;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.*;
@@ -180,7 +181,7 @@ class PodcastControllerTest {
         createDTO.setEpisodeNumber(1);
         createDTO.setTitle("New Episode");
         createDTO.setAudioUrl("http://example.com/audio.mp3");
-        createDTO.setDurationSeconds(1200);
+        createDTO.setDuration(LocalTime.of(0, 4, 24));
 
         PodcastEpisodeDTO responseDTO = new PodcastEpisodeDTO();
         given(podcastService.addEpisode(eq(1L), any(PodcastEpisodeCreateDTO.class))).willReturn(responseDTO);
@@ -197,7 +198,7 @@ class PodcastControllerTest {
         invalidDto.setEpisodeNumber(1);
         invalidDto.setTitle("");
         invalidDto.setAudioUrl("http://example.com/audio.mp3");
-        invalidDto.setDurationSeconds(1200);
+        invalidDto.setDuration(LocalTime.of(0, 4, 24));
 
         mockMvc.perform(post("/podcasts/{podcastId}/episodes", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -214,7 +215,7 @@ class PodcastControllerTest {
         invalidDto.setEpisodeNumber(null);
         invalidDto.setTitle("Valid Title");
         invalidDto.setAudioUrl("http://example.com/audio.mp3");
-        invalidDto.setDurationSeconds(1200);
+        invalidDto.setDuration(LocalTime.of(0, 4, 24));
 
         mockMvc.perform(post("/podcasts/{podcastId}/episodes", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -226,12 +227,12 @@ class PodcastControllerTest {
     }
 
     @Test
-    void addEpisodeNullDurationSecondsValidationTest() throws Exception {
+    void addEpisodeNullDurationValidationTest() throws Exception {
         PodcastEpisodeCreateDTO invalidDto = new PodcastEpisodeCreateDTO();
         invalidDto.setEpisodeNumber(1);
         invalidDto.setTitle("Valid Title");
         invalidDto.setAudioUrl("http://example.com/audio.mp3");
-        invalidDto.setDurationSeconds(null);
+        invalidDto.setDuration(null);
 
         mockMvc.perform(post("/podcasts/{podcastId}/episodes", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -248,7 +249,7 @@ class PodcastControllerTest {
         invalidDto.setEpisodeNumber(1);
         invalidDto.setTitle("a".repeat(256));
         invalidDto.setAudioUrl("http://example.com/audio.mp3");
-        invalidDto.setDurationSeconds(1200);
+        invalidDto.setDuration(LocalTime.of(0, 4, 24));
 
         mockMvc.perform(post("/podcasts/{podcastId}/episodes", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -265,7 +266,7 @@ class PodcastControllerTest {
         invalidDto.setEpisodeNumber(1);
         invalidDto.setTitle("Valid Title");
         invalidDto.setAudioUrl("a".repeat(1025));
-        invalidDto.setDurationSeconds(1200);
+        invalidDto.setDuration(LocalTime.of(0, 4, 24));
 
         mockMvc.perform(post("/podcasts/{podcastId}/episodes", 1L)
                         .contentType(MediaType.APPLICATION_JSON)

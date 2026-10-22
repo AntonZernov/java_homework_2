@@ -24,7 +24,7 @@ CREATE TABLE podcast_episodes (
     episode_number INT NOT NULL,
     title VARCHAR(255) NOT NULL,
     audio_url VARCHAR(1024) NOT NULL,
-    duration_seconds INT NOT NULL,
+    duration TIME(0) NOT NULL,
 
     CONSTRAINT fk_podcast FOREIGN KEY (podcast_id) REFERENCES podcasts (id) ON DELETE CASCADE,
     CONSTRAINT uk_podcast_episode UNIQUE (podcast_id, episode_number)

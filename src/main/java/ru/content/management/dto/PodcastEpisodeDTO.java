@@ -1,6 +1,8 @@
 package ru.content.management.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import java.time.LocalTime;
 
 @Data
 public class PodcastEpisodeDTO {
@@ -9,5 +11,6 @@ public class PodcastEpisodeDTO {
     private Integer episodeNumber;
     private String title;
     private String audioUrl;
-    private Integer durationSeconds;
+    @Schema(example = "00:04:24")
+    private LocalTime duration;
 }

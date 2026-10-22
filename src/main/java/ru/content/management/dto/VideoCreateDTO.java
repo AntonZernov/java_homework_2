@@ -1,5 +1,6 @@
 package ru.content.management.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -18,5 +19,6 @@ public class VideoCreateDTO {
     private String url;
 
     @NotNull
+    @Schema(example = "00:04:24")
     private LocalTime duration;
 }

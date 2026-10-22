@@ -15,7 +15,7 @@ public class PodcastEpisodeMapper {
         episode.setEpisodeNumber(dto.getEpisodeNumber());
         episode.setTitle(dto.getTitle());
         episode.setAudioUrl(dto.getAudioUrl());
-        episode.setDurationSeconds(dto.getDurationSeconds());
+        episode.setDuration(dto.getDuration());
         return episode;
     }
 
@@ -24,7 +24,7 @@ public class PodcastEpisodeMapper {
         episode.setEpisodeNumber(dto.getEpisodeNumber());
         episode.setTitle(dto.getTitle());
         episode.setAudioUrl(dto.getAudioUrl());
-        episode.setDurationSeconds(dto.getDurationSeconds());
+        episode.setDuration(dto.getDuration());
         return episode;
     }
 
@@ -35,7 +35,7 @@ public class PodcastEpisodeMapper {
         dto.setEpisodeNumber(episode.getEpisodeNumber());
         dto.setTitle(episode.getTitle());
         dto.setAudioUrl(episode.getAudioUrl());
-        dto.setDurationSeconds(episode.getDurationSeconds());
+        dto.setDuration(episode.getDuration());
         return dto;
     }
 }
