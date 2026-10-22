@@ -61,7 +61,6 @@ public class VideoServiceImpl implements VideoService {
     @Override
     public VideoDTO create(VideoCreateDTO dto) {
         Video video = VideoMapper.toEntityCreate(dto);
-        System.out.println("Video: " + video);
         return VideoMapper.toDTO(videoRepository.save(video));
     }
 

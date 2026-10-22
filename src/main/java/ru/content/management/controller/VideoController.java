@@ -3,6 +3,7 @@ package ru.content.management.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -30,8 +31,8 @@ public class VideoController {
     @Operation(summary = "Поиск видео")
     @ResponseStatus(HttpStatus.OK)
     public List<VideoDTO> find(
-            @RequestParam(required = false) String title,
-            @RequestParam(required = false) String url,
+            @RequestParam(required = false) @Size(max = 2) String title,
+            @RequestParam(required = false) @Size(max = 1024) String url,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime durationFrom,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime durationTo) {
         LocalTime cleanFrom = durationFrom != null ? durationFrom.truncatedTo(ChronoUnit.SECONDS) : null;
