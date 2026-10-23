@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.content.management.dto.PodcastCreateDTO;
@@ -93,7 +94,7 @@ class PodcastControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidDto)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error").value("Bad Request"))
+                .andExpect(jsonPath("$.error").value(HttpStatus.BAD_REQUEST.getReasonPhrase()))
                 .andExpect(jsonPath("$.status").value(400))
                 .andExpect(jsonPath("$.message").value(VALIDATION_ERROR_MESSAGE));
     }
@@ -107,7 +108,7 @@ class PodcastControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidDto)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error").value("Bad Request"))
+                .andExpect(jsonPath("$.error").value(HttpStatus.BAD_REQUEST.getReasonPhrase()))
                 .andExpect(jsonPath("$.status").value(400))
                 .andExpect(jsonPath("$.message").value(VALIDATION_ERROR_MESSAGE));
     }
@@ -120,9 +121,9 @@ class PodcastControllerTest {
         PodcastDTO responseDTO = new PodcastDTO();
         given(podcastService.update(eq(1L), any(PodcastUpdateDTO.class))).willReturn(responseDTO);
 
-        mockMvc.perform(put("/podcasts/{id}", 1L)
+        mockMvc.perform(patch("/podcasts/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(responseDTO)))
+                        .content(objectMapper.writeValueAsString(updateDTO)))
                 .andExpect(status().isOk());
     }
 
@@ -131,7 +132,7 @@ class PodcastControllerTest {
         PodcastUpdateDTO invalidDto = new PodcastUpdateDTO();
         invalidDto.setTitle("a".repeat(256));
 
-        mockMvc.perform(put("/podcasts/{id}", 1L)
+        mockMvc.perform(patch("/podcasts/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidDto)))
                 .andExpect(status().isBadRequest());
@@ -205,7 +206,7 @@ class PodcastControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidDto)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error").value("Bad Request"))
+                .andExpect(jsonPath("$.error").value(HttpStatus.BAD_REQUEST.getReasonPhrase()))
                 .andExpect(jsonPath("$.status").value(400))
                 .andExpect(jsonPath("$.message").value(VALIDATION_ERROR_MESSAGE));
     }
@@ -222,7 +223,7 @@ class PodcastControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidDto)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error").value("Bad Request"))
+                .andExpect(jsonPath("$.error").value(HttpStatus.BAD_REQUEST.getReasonPhrase()))
                 .andExpect(jsonPath("$.status").value(400))
                 .andExpect(jsonPath("$.message").value(VALIDATION_ERROR_MESSAGE));
     }
@@ -239,7 +240,7 @@ class PodcastControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidDto)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error").value("Bad Request"))
+                .andExpect(jsonPath("$.error").value(HttpStatus.BAD_REQUEST.getReasonPhrase()))
                 .andExpect(jsonPath("$.status").value(400))
                 .andExpect(jsonPath("$.message").value(VALIDATION_ERROR_MESSAGE));
     }
@@ -256,7 +257,7 @@ class PodcastControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidDto)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error").value("Bad Request"))
+                .andExpect(jsonPath("$.error").value(HttpStatus.BAD_REQUEST.getReasonPhrase()))
                 .andExpect(jsonPath("$.status").value(400))
                 .andExpect(jsonPath("$.message").value(VALIDATION_ERROR_MESSAGE));
     }
@@ -273,7 +274,7 @@ class PodcastControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidDto)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error").value("Bad Request"))
+                .andExpect(jsonPath("$.error").value(HttpStatus.BAD_REQUEST.getReasonPhrase()))
                 .andExpect(jsonPath("$.status").value(400))
                 .andExpect(jsonPath("$.message").value(VALIDATION_ERROR_MESSAGE));
     }

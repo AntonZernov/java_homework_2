@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.content.management.dto.ArticleCreateDTO;
@@ -59,7 +60,7 @@ class ArticleControllerTest {
     @Test
     void findByIdNotFoundTest() throws Exception {
         given(articleService.findById(1L))
-                .willThrow(new EntityNotFoundException("Статья не найдена"));
+                .willThrow(new EntityNotFoundException(ARTICLE_NOT_FOUND));
 
         mockMvc.perform(get("/article/{id}", 1L))
                 .andExpect(status().isNotFound())
@@ -94,7 +95,7 @@ class ArticleControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidDto)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error").value("Bad Request"))
+                .andExpect(jsonPath("$.error").value(HttpStatus.BAD_REQUEST.getReasonPhrase()))
                 .andExpect(jsonPath("$.status").value(400))
                 .andExpect(jsonPath("$.message").value(VALIDATION_ERROR_MESSAGE));
     }
@@ -110,7 +111,7 @@ class ArticleControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidDto)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error").value("Bad Request"))
+                .andExpect(jsonPath("$.error").value(HttpStatus.BAD_REQUEST.getReasonPhrase()))
                 .andExpect(jsonPath("$.status").value(400))
                 .andExpect(jsonPath("$.message").value(VALIDATION_ERROR_MESSAGE));
     }
@@ -126,7 +127,7 @@ class ArticleControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidDto)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error").value("Bad Request"))
+                .andExpect(jsonPath("$.error").value(HttpStatus.BAD_REQUEST.getReasonPhrase()))
                 .andExpect(jsonPath("$.status").value(400))
                 .andExpect(jsonPath("$.message").value(VALIDATION_ERROR_MESSAGE));
     }
@@ -139,9 +140,9 @@ class ArticleControllerTest {
         ArticleDTO responseDTO = new ArticleDTO();
         given(articleService.update(eq(1L), any(ArticleUpdateDTO.class))).willReturn(responseDTO);
 
-        mockMvc.perform(put("/article/{id}", 1L)
+        mockMvc.perform(patch("/article/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(responseDTO)))
+                        .content(objectMapper.writeValueAsString(updateDTO)))
                 .andExpect(status().isOk());
     }
 
@@ -151,7 +152,7 @@ class ArticleControllerTest {
         ArticleUpdateDTO invalidDto = new ArticleUpdateDTO();
         invalidDto.setAuthor("a".repeat(151));
 
-        mockMvc.perform(put("/article/{id}", 1L)
+        mockMvc.perform(patch("/article/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidDto)))
                 .andExpect(status().isBadRequest());
@@ -162,7 +163,7 @@ class ArticleControllerTest {
         ArticleUpdateDTO invalidDto = new ArticleUpdateDTO();
         invalidDto.setTitle("a".repeat(256));
 
-        mockMvc.perform(put("/article/{id}", 1L)
+        mockMvc.perform(patch("/article/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidDto)))
                 .andExpect(status().isBadRequest());
@@ -175,7 +176,7 @@ class ArticleControllerTest {
     }
     @Test
     void deleteNotFoundExceptionTest() throws Exception {
-        willThrow(new EntityNotFoundException("Статья не найдена"))
+        willThrow(new EntityNotFoundException(ARTICLE_NOT_FOUND))
                 .given(articleService).delete(1L);
 
         mockMvc.perform(delete("/article/{id}", 1L))

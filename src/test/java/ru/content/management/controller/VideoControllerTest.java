@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.content.management.dto.VideoCreateDTO;
@@ -95,7 +96,7 @@ class VideoControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidDto)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error").value("Bad Request"))
+                .andExpect(jsonPath("$.error").value(HttpStatus.BAD_REQUEST.getReasonPhrase()))
                 .andExpect(jsonPath("$.status").value(400))
                 .andExpect(jsonPath("$.message").value(VALIDATION_ERROR_MESSAGE));
     }
@@ -111,7 +112,7 @@ class VideoControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidDto)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error").value("Bad Request"))
+                .andExpect(jsonPath("$.error").value(HttpStatus.BAD_REQUEST.getReasonPhrase()))
                 .andExpect(jsonPath("$.status").value(400))
                 .andExpect(jsonPath("$.message").value(VALIDATION_ERROR_MESSAGE));
     }
@@ -127,7 +128,7 @@ class VideoControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidDto)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error").value("Bad Request"))
+                .andExpect(jsonPath("$.error").value(HttpStatus.BAD_REQUEST.getReasonPhrase()))
                 .andExpect(jsonPath("$.status").value(400))
                 .andExpect(jsonPath("$.message").value(VALIDATION_ERROR_MESSAGE));
     }
@@ -143,7 +144,7 @@ class VideoControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidDto)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error").value("Bad Request"))
+                .andExpect(jsonPath("$.error").value(HttpStatus.BAD_REQUEST.getReasonPhrase()))
                 .andExpect(jsonPath("$.status").value(400))
                 .andExpect(jsonPath("$.message").value(VALIDATION_ERROR_MESSAGE));
     }
@@ -159,7 +160,7 @@ class VideoControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidDto)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error").value("Bad Request"))
+                .andExpect(jsonPath("$.error").value(HttpStatus.BAD_REQUEST.getReasonPhrase()))
                 .andExpect(jsonPath("$.status").value(400))
                 .andExpect(jsonPath("$.message").value(VALIDATION_ERROR_MESSAGE));
     }
@@ -172,9 +173,9 @@ class VideoControllerTest {
         VideoDTO responseDTO = new VideoDTO();
         given(videoService.update(eq(1L), any(VideoUpdateDTO.class))).willReturn(responseDTO);
 
-        mockMvc.perform(put("/video/{id}", 1L)
+        mockMvc.perform(patch("/video/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(responseDTO)))
+                        .content(objectMapper.writeValueAsString(updateDTO)))
                 .andExpect(status().isOk());
     }
 
@@ -183,7 +184,7 @@ class VideoControllerTest {
         VideoUpdateDTO invalidDto = new VideoUpdateDTO();
         invalidDto.setTitle("a".repeat(256));
 
-        mockMvc.perform(put("/video/{id}", 1L)
+        mockMvc.perform(patch("/video/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidDto)))
                 .andExpect(status().isBadRequest());
@@ -194,7 +195,7 @@ class VideoControllerTest {
         VideoUpdateDTO invalidDto = new VideoUpdateDTO();
         invalidDto.setUrl("a".repeat(1025));
 
-        mockMvc.perform(put("/video/{id}", 1L)
+        mockMvc.perform(patch("/video/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidDto)))
                 .andExpect(status().isBadRequest());
@@ -208,7 +209,7 @@ class VideoControllerTest {
 
     @Test
     void deleteNotFoundExceptionTest() throws Exception {
-        willThrow(new EntityNotFoundException("Видео не найдено"))
+        willThrow(new EntityNotFoundException(VIDEO_NOT_FOUND))
                 .given(videoService).delete(1L);
 
         mockMvc.perform(delete("/video/{id}", 1L))
