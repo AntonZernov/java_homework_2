@@ -52,7 +52,7 @@ public class VideoController {
         return videoService.create(dto);
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     @Operation(summary = "Обновить видео")
     @ResponseStatus(HttpStatus.OK)
     public VideoDTO update(@PathVariable Long id, @Valid @RequestBody VideoUpdateDTO dto) {

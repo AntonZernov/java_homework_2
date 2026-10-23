@@ -23,6 +23,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static ru.content.management.controller.TestConstants.*;
 
 @WebMvcTest(VideoController.class)
 @Import(GlobalExceptionHandler.class)
@@ -59,12 +60,12 @@ class VideoControllerTest {
     @Test
     void findByIdNotFoundTest() throws Exception {
         given(videoService.findById(1L))
-                .willThrow(new EntityNotFoundException("Видео не найдено"));
+                .willThrow(new EntityNotFoundException(VIDEO_NOT_FOUND));
 
         mockMvc.perform(get("/video/{id}", 1L))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.status").value(404))
-                .andExpect(jsonPath("$.message").value("Видео не найдено"));
+                .andExpect(jsonPath("$.message").value(VIDEO_NOT_FOUND));
     }
 
     @Test
@@ -96,7 +97,7 @@ class VideoControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error").value("Bad Request"))
                 .andExpect(jsonPath("$.status").value(400))
-                .andExpect(jsonPath("$.message").value("Проверьте наличие всех обязательных полей и их корректность."));
+                .andExpect(jsonPath("$.message").value(VALIDATION_ERROR_MESSAGE));
     }
 
     @Test
@@ -112,7 +113,7 @@ class VideoControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error").value("Bad Request"))
                 .andExpect(jsonPath("$.status").value(400))
-                .andExpect(jsonPath("$.message").value("Проверьте наличие всех обязательных полей и их корректность."));
+                .andExpect(jsonPath("$.message").value(VALIDATION_ERROR_MESSAGE));
     }
 
     @Test
@@ -128,7 +129,7 @@ class VideoControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error").value("Bad Request"))
                 .andExpect(jsonPath("$.status").value(400))
-                .andExpect(jsonPath("$.message").value("Проверьте наличие всех обязательных полей и их корректность."));
+                .andExpect(jsonPath("$.message").value(VALIDATION_ERROR_MESSAGE));
     }
 
     @Test
@@ -144,7 +145,7 @@ class VideoControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error").value("Bad Request"))
                 .andExpect(jsonPath("$.status").value(400))
-                .andExpect(jsonPath("$.message").value("Проверьте наличие всех обязательных полей и их корректность."));
+                .andExpect(jsonPath("$.message").value(VALIDATION_ERROR_MESSAGE));
     }
 
     @Test
@@ -160,7 +161,7 @@ class VideoControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error").value("Bad Request"))
                 .andExpect(jsonPath("$.status").value(400))
-                .andExpect(jsonPath("$.message").value("Проверьте наличие всех обязательных полей и их корректность."));
+                .andExpect(jsonPath("$.message").value(VALIDATION_ERROR_MESSAGE));
     }
 
     @Test
@@ -213,6 +214,6 @@ class VideoControllerTest {
         mockMvc.perform(delete("/video/{id}", 1L))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.status").value(404))
-                .andExpect(jsonPath("$.message").value("Видео не найдено"));
+                .andExpect(jsonPath("$.message").value(VIDEO_NOT_FOUND));
     }
 }

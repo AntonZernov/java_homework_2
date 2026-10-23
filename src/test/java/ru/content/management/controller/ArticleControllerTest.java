@@ -22,6 +22,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static ru.content.management.controller.TestConstants.*;
 
 @WebMvcTest(ArticleController.class)
 @Import(GlobalExceptionHandler.class)
@@ -63,7 +64,7 @@ class ArticleControllerTest {
         mockMvc.perform(get("/article/{id}", 1L))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.status").value(404))
-                .andExpect(jsonPath("$.message").value("Статья не найдена"));
+                .andExpect(jsonPath("$.message").value(ARTICLE_NOT_FOUND));
     }
 
     @Test
@@ -95,7 +96,7 @@ class ArticleControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error").value("Bad Request"))
                 .andExpect(jsonPath("$.status").value(400))
-                .andExpect(jsonPath("$.message").value("Проверьте наличие всех обязательных полей и их корректность."));
+                .andExpect(jsonPath("$.message").value(VALIDATION_ERROR_MESSAGE));
     }
 
     @Test
@@ -111,7 +112,7 @@ class ArticleControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error").value("Bad Request"))
                 .andExpect(jsonPath("$.status").value(400))
-                .andExpect(jsonPath("$.message").value("Проверьте наличие всех обязательных полей и их корректность."));
+                .andExpect(jsonPath("$.message").value(VALIDATION_ERROR_MESSAGE));
     }
 
     @Test
@@ -127,7 +128,7 @@ class ArticleControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error").value("Bad Request"))
                 .andExpect(jsonPath("$.status").value(400))
-                .andExpect(jsonPath("$.message").value("Проверьте наличие всех обязательных полей и их корректность."));
+                .andExpect(jsonPath("$.message").value(VALIDATION_ERROR_MESSAGE));
     }
 
     @Test
@@ -180,6 +181,6 @@ class ArticleControllerTest {
         mockMvc.perform(delete("/article/{id}", 1L))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.status").value(404))
-                .andExpect(jsonPath("$.message").value("Статья не найдена"));
+                .andExpect(jsonPath("$.message").value(ARTICLE_NOT_FOUND));
     }
 }

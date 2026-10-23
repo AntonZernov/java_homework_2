@@ -48,7 +48,7 @@ public class PodcastController {
         return podcastService.create(dto);
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     @Operation(summary = "Обновить подкаст")
     @ResponseStatus(HttpStatus.OK)
     public PodcastDTO update(@PathVariable Long id, @Valid @RequestBody PodcastUpdateDTO dto) {

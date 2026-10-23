@@ -9,18 +9,14 @@ import java.time.LocalTime;
 
 @Data
 public class PodcastEpisodeCreateDTO {
-
     @NotNull
     private Integer episodeNumber;
-
     @NotBlank
     @Size(max = 255)
     private String title;
-
     @NotBlank
     @Size(max = 1024)
     private String audioUrl;
-
     @NotNull
     @Schema(example = "00:04:24")
     private LocalTime duration;

@@ -46,7 +46,7 @@ public class ArticleController {
         return articleService.create(dto);
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     @Operation(summary = "Обновить статью")
     @ResponseStatus(HttpStatus.OK)
     public ArticleDTO update(@PathVariable Long id, @Valid @RequestBody ArticleUpdateDTO dto) {

@@ -10,16 +10,6 @@ import java.time.LocalDateTime;
 @UtilityClass
 public class ArticleMapper {
 
-    public Article toEntity(ArticleDTO dto) {
-        Article article = new Article();
-        article.setId(dto.getId());
-        article.setTitle(dto.getTitle());
-        article.setText(dto.getText());
-        article.setAuthor(dto.getAuthor());
-        article.setPublishedAt(dto.getPublishedAt());
-        return article;
-    }
-
     public Article toEntityCreate(ArticleCreateDTO dto) {
         Article article = new Article();
         article.setTitle(dto.getTitle());

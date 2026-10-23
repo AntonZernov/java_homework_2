@@ -8,17 +8,6 @@ import ru.content.management.entity.PodcastEpisode;
 @UtilityClass
 public class PodcastEpisodeMapper {
 
-    public PodcastEpisode toEntity(PodcastEpisodeDTO dto) {
-        PodcastEpisode episode = new PodcastEpisode();
-        episode.setId(dto.getId());
-        episode.setPodcastId(dto.getPodcastId());
-        episode.setEpisodeNumber(dto.getEpisodeNumber());
-        episode.setTitle(dto.getTitle());
-        episode.setAudioUrl(dto.getAudioUrl());
-        episode.setDuration(dto.getDuration());
-        return episode;
-    }
-
     public PodcastEpisode toEntityCreate(PodcastEpisodeCreateDTO dto) {
         PodcastEpisode episode = new PodcastEpisode();
         episode.setEpisodeNumber(dto.getEpisodeNumber());

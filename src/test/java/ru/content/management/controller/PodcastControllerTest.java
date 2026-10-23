@@ -25,6 +25,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static ru.content.management.controller.TestConstants.*;
 
 @WebMvcTest(PodcastController.class)
 @Import(GlobalExceptionHandler.class)
@@ -61,12 +62,12 @@ class PodcastControllerTest {
     @Test
     void findByIdNotFoundTest() throws Exception {
         given(podcastService.findById(1L))
-                .willThrow(new EntityNotFoundException("Подкаст не найден"));
+                .willThrow(new EntityNotFoundException(PODCAST_NOT_FOUND));
 
         mockMvc.perform(get("/podcasts/{id}", 1L))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.status").value(404))
-                .andExpect(jsonPath("$.message").value("Подкаст не найден"));
+                .andExpect(jsonPath("$.message").value(PODCAST_NOT_FOUND));
     }
 
     @Test
@@ -94,7 +95,7 @@ class PodcastControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error").value("Bad Request"))
                 .andExpect(jsonPath("$.status").value(400))
-                .andExpect(jsonPath("$.message").value("Проверьте наличие всех обязательных полей и их корректность."));
+                .andExpect(jsonPath("$.message").value(VALIDATION_ERROR_MESSAGE));
     }
 
     @Test
@@ -108,7 +109,7 @@ class PodcastControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error").value("Bad Request"))
                 .andExpect(jsonPath("$.status").value(400))
-                .andExpect(jsonPath("$.message").value("Проверьте наличие всех обязательных полей и их корректность."));
+                .andExpect(jsonPath("$.message").value(VALIDATION_ERROR_MESSAGE));
     }
 
     @Test
@@ -144,13 +145,13 @@ class PodcastControllerTest {
 
     @Test
     void deleteNotFoundExceptionTest() throws Exception {
-        willThrow(new EntityNotFoundException("Подкаст не найден"))
+        willThrow(new EntityNotFoundException(PODCAST_NOT_FOUND))
                 .given(podcastService).delete(1L);
 
         mockMvc.perform(delete("/podcasts/{id}", 1L))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.status").value(404))
-                .andExpect(jsonPath("$.message").value("Подкаст не найден"));
+                .andExpect(jsonPath("$.message").value(PODCAST_NOT_FOUND));
     }
 
     @Test
@@ -206,7 +207,7 @@ class PodcastControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error").value("Bad Request"))
                 .andExpect(jsonPath("$.status").value(400))
-                .andExpect(jsonPath("$.message").value("Проверьте наличие всех обязательных полей и их корректность."));
+                .andExpect(jsonPath("$.message").value(VALIDATION_ERROR_MESSAGE));
     }
 
     @Test
@@ -223,7 +224,7 @@ class PodcastControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error").value("Bad Request"))
                 .andExpect(jsonPath("$.status").value(400))
-                .andExpect(jsonPath("$.message").value("Проверьте наличие всех обязательных полей и их корректность."));
+                .andExpect(jsonPath("$.message").value(VALIDATION_ERROR_MESSAGE));
     }
 
     @Test
@@ -240,7 +241,7 @@ class PodcastControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error").value("Bad Request"))
                 .andExpect(jsonPath("$.status").value(400))
-                .andExpect(jsonPath("$.message").value("Проверьте наличие всех обязательных полей и их корректность."));
+                .andExpect(jsonPath("$.message").value(VALIDATION_ERROR_MESSAGE));
     }
 
     @Test
@@ -257,7 +258,7 @@ class PodcastControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error").value("Bad Request"))
                 .andExpect(jsonPath("$.status").value(400))
-                .andExpect(jsonPath("$.message").value("Проверьте наличие всех обязательных полей и их корректность."));
+                .andExpect(jsonPath("$.message").value(VALIDATION_ERROR_MESSAGE));
     }
 
     @Test
@@ -274,6 +275,6 @@ class PodcastControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error").value("Bad Request"))
                 .andExpect(jsonPath("$.status").value(400))
-                .andExpect(jsonPath("$.message").value("Проверьте наличие всех обязательных полей и их корректность."));
+                .andExpect(jsonPath("$.message").value(VALIDATION_ERROR_MESSAGE));
     }
 }

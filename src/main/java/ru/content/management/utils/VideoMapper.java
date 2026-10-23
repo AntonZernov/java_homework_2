@@ -9,15 +9,6 @@ import ru.content.management.entity.Video;
 @UtilityClass
 public class VideoMapper {
 
-    public Video toEntity(VideoDTO dto) {
-        Video video = new Video();
-        video.setId(dto.getId());
-        video.setTitle(dto.getTitle());
-        video.setUrl(dto.getUrl());
-        video.setDuration(dto.getDuration());
-        return video;
-    }
-
     public Video toEntityCreate(VideoCreateDTO dto) {
         Video video = new Video();
         video.setTitle(dto.getTitle());
