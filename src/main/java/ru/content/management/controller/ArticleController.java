@@ -23,7 +23,7 @@ public class ArticleController {
         this.articleService = articleService;
     }
 
-    @GetMapping("/find")
+    @GetMapping
     @Operation(summary = "Поиск статей")
     @ResponseStatus(HttpStatus.OK)
     public List<ArticleDTO> find(
@@ -39,7 +39,7 @@ public class ArticleController {
         return articleService.findById(id);
     }
 
-    @PostMapping("/create")
+    @PostMapping
     @Operation(summary = "Создать статью")
     @ResponseStatus(HttpStatus.CREATED)
     public ArticleDTO create(@Valid @RequestBody ArticleCreateDTO dto) {

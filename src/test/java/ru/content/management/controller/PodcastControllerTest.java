@@ -46,7 +46,7 @@ class PodcastControllerTest {
         PodcastDTO podcast = new PodcastDTO();
         given(podcastService.find(null)).willReturn(List.of(podcast));
 
-        mockMvc.perform(get("/podcasts/find"))
+        mockMvc.perform(get("/podcasts"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray());
     }
@@ -79,7 +79,7 @@ class PodcastControllerTest {
         PodcastDTO responseDTO = new PodcastDTO();
         given(podcastService.create(any(PodcastCreateDTO.class))).willReturn(responseDTO);
 
-        mockMvc.perform(post("/podcasts/create")
+        mockMvc.perform(post("/podcasts")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(createDTO)))
                 .andExpect(status().isCreated());
@@ -90,7 +90,7 @@ class PodcastControllerTest {
         PodcastCreateDTO invalidDto = new PodcastCreateDTO();
         invalidDto.setTitle("");
 
-        mockMvc.perform(post("/podcasts/create")
+        mockMvc.perform(post("/podcasts")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidDto)))
                 .andExpect(status().isBadRequest())
@@ -104,7 +104,7 @@ class PodcastControllerTest {
         PodcastCreateDTO invalidDto = new PodcastCreateDTO();
         invalidDto.setTitle("a".repeat(256));
 
-        mockMvc.perform(post("/podcasts/create")
+        mockMvc.perform(post("/podcasts")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidDto)))
                 .andExpect(status().isBadRequest())

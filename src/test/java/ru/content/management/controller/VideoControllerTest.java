@@ -44,7 +44,7 @@ class VideoControllerTest {
         VideoDTO video = new VideoDTO();
         given(videoService.find(anyString(), anyString(), any(LocalTime.class), any(LocalTime.class))).willReturn(List.of(video));
 
-        mockMvc.perform(get("/videos/find"))
+        mockMvc.perform(get("/videos"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray());
     }
@@ -79,7 +79,7 @@ class VideoControllerTest {
         VideoDTO responseDTO = new VideoDTO();
         given(videoService.create(any(VideoCreateDTO.class))).willReturn(responseDTO);
 
-        mockMvc.perform(post("/videos/create")
+        mockMvc.perform(post("/videos")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(createDTO)))
                 .andExpect(status().isCreated());
@@ -92,7 +92,7 @@ class VideoControllerTest {
         invalidDto.setUrl("https://example.com/video");
         invalidDto.setDuration(LocalTime.of(0, 5, 30));
 
-        mockMvc.perform(post("/videos/create")
+        mockMvc.perform(post("/videos")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidDto)))
                 .andExpect(status().isBadRequest())
@@ -108,7 +108,7 @@ class VideoControllerTest {
         invalidDto.setUrl("   ");
         invalidDto.setDuration(LocalTime.of(0, 5, 30));
 
-        mockMvc.perform(post("/videos/create")
+        mockMvc.perform(post("/videos")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidDto)))
                 .andExpect(status().isBadRequest())
@@ -124,7 +124,7 @@ class VideoControllerTest {
         invalidDto.setUrl("https://example.com/video");
         invalidDto.setDuration(null);
 
-        mockMvc.perform(post("/videos/create")
+        mockMvc.perform(post("/videos")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidDto)))
                 .andExpect(status().isBadRequest())
@@ -140,7 +140,7 @@ class VideoControllerTest {
         invalidDto.setUrl("https://example.com/video");
         invalidDto.setDuration(LocalTime.of(0, 5, 30));
 
-        mockMvc.perform(post("/videos/create")
+        mockMvc.perform(post("/videos")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidDto)))
                 .andExpect(status().isBadRequest())
@@ -156,7 +156,7 @@ class VideoControllerTest {
         invalidDto.setUrl("a".repeat(1025));
         invalidDto.setDuration(LocalTime.of(0, 5, 30));
 
-        mockMvc.perform(post("/videos/create")
+        mockMvc.perform(post("/videos")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidDto)))
                 .andExpect(status().isBadRequest())

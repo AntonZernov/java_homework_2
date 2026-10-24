@@ -43,7 +43,7 @@ class ArticleControllerTest {
         ArticleDTO article = new ArticleDTO();
         given(articleService.find(null, null)).willReturn(List.of(article));
 
-        mockMvc.perform(get("/articles/find"))
+        mockMvc.perform(get("/articles"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray());
     }
@@ -78,7 +78,7 @@ class ArticleControllerTest {
         ArticleDTO responseDTO = new ArticleDTO();
         given(articleService.create(any(ArticleCreateDTO.class))).willReturn(responseDTO);
 
-        mockMvc.perform(post("/articles/create")
+        mockMvc.perform(post("/articles")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(createDTO)))
                 .andExpect(status().isCreated());
@@ -91,7 +91,7 @@ class ArticleControllerTest {
         invalidDto.setText("   ");
         invalidDto.setAuthor("");
 
-        mockMvc.perform(post("/articles/create")
+        mockMvc.perform(post("/articles")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidDto)))
                 .andExpect(status().isBadRequest())
@@ -107,7 +107,7 @@ class ArticleControllerTest {
         invalidDto.setText("Valid Text");
         invalidDto.setAuthor("Valid Author");
 
-        mockMvc.perform(post("/articles/create")
+        mockMvc.perform(post("/articles")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidDto)))
                 .andExpect(status().isBadRequest())
@@ -123,7 +123,7 @@ class ArticleControllerTest {
         invalidDto.setText("Valid Text");
         invalidDto.setAuthor("a".repeat(151));
 
-        mockMvc.perform(post("/articles/create")
+        mockMvc.perform(post("/articles")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidDto)))
                 .andExpect(status().isBadRequest())

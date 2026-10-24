@@ -25,7 +25,7 @@ public class VideoController {
 
     private final VideoService videoService;
 
-    @GetMapping("/find")
+    @GetMapping
     @Operation(summary = "Поиск видео")
     @ResponseStatus(HttpStatus.OK)
     public List<VideoDTO> find(
@@ -45,7 +45,7 @@ public class VideoController {
         return videoService.findById(id);
     }
 
-    @PostMapping("/create")
+    @PostMapping
     @Operation(summary = "Создать видео")
     @ResponseStatus(HttpStatus.CREATED)
     public VideoDTO create(@Valid @RequestBody VideoCreateDTO dto) {

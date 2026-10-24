@@ -26,7 +26,7 @@ public class PodcastController {
         this.podcastService = podcastService;
     }
 
-    @GetMapping("/find")
+    @GetMapping
     @Operation(summary = "Поиск подкастов")
     @ResponseStatus(HttpStatus.OK)
     public List<PodcastDTO> find(
@@ -41,7 +41,7 @@ public class PodcastController {
         return podcastService.findById(id);
     }
 
-    @PostMapping("/create")
+    @PostMapping
     @Operation(summary = "Создать подкаст")
     @ResponseStatus(HttpStatus.CREATED)
     public PodcastDTO create(@Valid @RequestBody PodcastCreateDTO dto) {
