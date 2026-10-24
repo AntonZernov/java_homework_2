@@ -43,7 +43,7 @@ class ArticleControllerTest {
         ArticleDTO article = new ArticleDTO();
         given(articleService.find(null, null)).willReturn(List.of(article));
 
-        mockMvc.perform(get("/article/find"))
+        mockMvc.perform(get("/articles/find"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray());
     }
@@ -53,7 +53,7 @@ class ArticleControllerTest {
         ArticleDTO article = new ArticleDTO();
         given(articleService.findById(1L)).willReturn(article);
 
-        mockMvc.perform(get("/article/{id}", 1L))
+        mockMvc.perform(get("/articles/{id}", 1L))
                 .andExpect(status().isOk());
     }
 
@@ -62,7 +62,7 @@ class ArticleControllerTest {
         given(articleService.findById(1L))
                 .willThrow(new EntityNotFoundException(ARTICLE_NOT_FOUND));
 
-        mockMvc.perform(get("/article/{id}", 1L))
+        mockMvc.perform(get("/articles/{id}", 1L))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.status").value(404))
                 .andExpect(jsonPath("$.message").value(ARTICLE_NOT_FOUND));
@@ -78,7 +78,7 @@ class ArticleControllerTest {
         ArticleDTO responseDTO = new ArticleDTO();
         given(articleService.create(any(ArticleCreateDTO.class))).willReturn(responseDTO);
 
-        mockMvc.perform(post("/article/create")
+        mockMvc.perform(post("/articles/create")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(createDTO)))
                 .andExpect(status().isCreated());
@@ -91,7 +91,7 @@ class ArticleControllerTest {
         invalidDto.setText("   ");
         invalidDto.setAuthor("");
 
-        mockMvc.perform(post("/article/create")
+        mockMvc.perform(post("/articles/create")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidDto)))
                 .andExpect(status().isBadRequest())
@@ -107,7 +107,7 @@ class ArticleControllerTest {
         invalidDto.setText("Valid Text");
         invalidDto.setAuthor("Valid Author");
 
-        mockMvc.perform(post("/article/create")
+        mockMvc.perform(post("/articles/create")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidDto)))
                 .andExpect(status().isBadRequest())
@@ -123,7 +123,7 @@ class ArticleControllerTest {
         invalidDto.setText("Valid Text");
         invalidDto.setAuthor("a".repeat(151));
 
-        mockMvc.perform(post("/article/create")
+        mockMvc.perform(post("/articles/create")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidDto)))
                 .andExpect(status().isBadRequest())
@@ -140,7 +140,7 @@ class ArticleControllerTest {
         ArticleDTO responseDTO = new ArticleDTO();
         given(articleService.update(eq(1L), any(ArticleUpdateDTO.class))).willReturn(responseDTO);
 
-        mockMvc.perform(patch("/article/{id}", 1L)
+        mockMvc.perform(patch("/articles/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateDTO)))
                 .andExpect(status().isOk());
@@ -152,7 +152,7 @@ class ArticleControllerTest {
         ArticleUpdateDTO invalidDto = new ArticleUpdateDTO();
         invalidDto.setAuthor("a".repeat(151));
 
-        mockMvc.perform(patch("/article/{id}", 1L)
+        mockMvc.perform(patch("/articles/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidDto)))
                 .andExpect(status().isBadRequest());
@@ -163,7 +163,7 @@ class ArticleControllerTest {
         ArticleUpdateDTO invalidDto = new ArticleUpdateDTO();
         invalidDto.setTitle("a".repeat(256));
 
-        mockMvc.perform(patch("/article/{id}", 1L)
+        mockMvc.perform(patch("/articles/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidDto)))
                 .andExpect(status().isBadRequest());
@@ -171,7 +171,7 @@ class ArticleControllerTest {
 
     @Test
     void deleteSuccessTest() throws Exception {
-        mockMvc.perform(delete("/article/{id}", 1L))
+        mockMvc.perform(delete("/articles/{id}", 1L))
                 .andExpect(status().isNoContent());
     }
     @Test
@@ -179,7 +179,7 @@ class ArticleControllerTest {
         willThrow(new EntityNotFoundException(ARTICLE_NOT_FOUND))
                 .given(articleService).delete(1L);
 
-        mockMvc.perform(delete("/article/{id}", 1L))
+        mockMvc.perform(delete("/articles/{id}", 1L))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.status").value(404))
                 .andExpect(jsonPath("$.message").value(ARTICLE_NOT_FOUND));

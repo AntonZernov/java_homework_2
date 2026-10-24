@@ -13,7 +13,7 @@ import ru.content.management.service.ArticleService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/article")
+@RequestMapping("/articles")
 @Tag(name = "Article", description = "API для управления статьями")
 public class ArticleController {
 

@@ -18,7 +18,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @RestController
-@RequestMapping("/video")
+@RequestMapping("/videos")
 @Tag(name = "Video", description = "API для управления видео")
 @RequiredArgsConstructor
 public class VideoController {

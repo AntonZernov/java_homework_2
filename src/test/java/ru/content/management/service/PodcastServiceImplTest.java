@@ -11,6 +11,7 @@ import ru.content.management.dto.PodcastCreateDTO;
 import ru.content.management.dto.PodcastDTO;
 import ru.content.management.dto.PodcastEpisodeCreateDTO;
 import ru.content.management.dto.PodcastEpisodeDTO;
+import ru.content.management.dto.PodcastEpisodeUpdateDTO;
 import ru.content.management.dto.PodcastUpdateDTO;
 import ru.content.management.entity.Podcast;
 import ru.content.management.entity.PodcastEpisode;
@@ -292,6 +293,108 @@ class PodcastServiceImplTest {
         assertEquals("Подкаст не найден", exception.getMessage());
         verify(podcastRepository).existsById(99L);
         verify(podcastEpisodeRepository, never()).save(any());
+    }
+
+    @Test
+    void findEpisodeByIdSuccessTest() {
+        PodcastEpisode episode = createPodcastEpisode();
+        PodcastEpisodeDTO dto = createPodcastEpisodeDTO();
+
+        when(podcastEpisodeRepository.findById(1L)).thenReturn(java.util.Optional.of(episode));
+        try (MockedStatic<PodcastEpisodeMapper> mockedMapper = Mockito.mockStatic(PodcastEpisodeMapper.class)) {
+            mockedMapper.when(() -> PodcastEpisodeMapper.toDTO(episode)).thenReturn(dto);
+            PodcastEpisodeDTO result = podcastService.findEpisodeById(1L);
+            assertNotNull(result);
+            assertEquals("Episode 1", result.getTitle());
+            verify(podcastEpisodeRepository).findById(1L);
+        }
+    }
+
+    @Test
+    void findEpisodeByIdNotFoundExceptionTest() {
+        when(podcastEpisodeRepository.findById(99L)).thenReturn(java.util.Optional.empty());
+
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> {
+            podcastService.findEpisodeById(99L);
+        });
+
+        assertEquals("Эпизод не найден", exception.getMessage());
+        verify(podcastEpisodeRepository).findById(99L);
+    }
+
+    @Test
+    void updateEpisodeSuccessTest() {
+        PodcastEpisodeUpdateDTO updateDTO = new PodcastEpisodeUpdateDTO();
+        updateDTO.setTitle("Updated Episode");
+
+        PodcastEpisode existing = createPodcastEpisode();
+
+        PodcastEpisode saved = new PodcastEpisode();
+        saved.setId(1L);
+        saved.setPodcastId(1L);
+        saved.setEpisodeNumber(1);
+        saved.setTitle("Updated Episode");
+        saved.setAudioUrl("http://example.com/audio.mp3");
+        saved.setDuration(LocalTime.of(0, 4, 24));
+
+        PodcastEpisodeDTO savedDTO = new PodcastEpisodeDTO();
+        savedDTO.setId(1L);
+        savedDTO.setPodcastId(1L);
+        savedDTO.setEpisodeNumber(1);
+        savedDTO.setTitle("Updated Episode");
+        savedDTO.setAudioUrl("http://example.com/audio.mp3");
+        savedDTO.setDuration(LocalTime.of(0, 4, 24));
+
+        when(podcastEpisodeRepository.findById(1L)).thenReturn(java.util.Optional.of(existing));
+        when(podcastEpisodeRepository.save(existing)).thenReturn(saved);
+        try (MockedStatic<PodcastEpisodeMapper> mockedMapper = Mockito.mockStatic(PodcastEpisodeMapper.class)) {
+            mockedMapper.when(() -> PodcastEpisodeMapper.toDTO(saved)).thenReturn(savedDTO);
+
+            PodcastEpisodeDTO result = podcastService.updateEpisode(1L, updateDTO);
+
+            assertNotNull(result);
+            assertEquals("Updated Episode", result.getTitle());
+            verify(podcastEpisodeRepository).findById(1L);
+            verify(podcastEpisodeRepository).save(existing);
+        }
+    }
+
+    @Test
+    void updateEpisodeNotFoundExceptionTest() {
+        PodcastEpisodeUpdateDTO updateDTO = new PodcastEpisodeUpdateDTO();
+        updateDTO.setTitle("Updated Episode");
+
+        when(podcastEpisodeRepository.findById(99L)).thenReturn(java.util.Optional.empty());
+
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> {
+            podcastService.updateEpisode(99L, updateDTO);
+        });
+
+        assertEquals("Эпизод для редактирования не найден", exception.getMessage());
+        verify(podcastEpisodeRepository).findById(99L);
+    }
+
+    @Test
+    void deleteEpisodeSuccessTest() {
+        when(podcastEpisodeRepository.existsById(1L)).thenReturn(true);
+
+        podcastService.deleteEpisode(1L);
+
+        verify(podcastEpisodeRepository).existsById(1L);
+        verify(podcastEpisodeRepository).deleteById(1L);
+    }
+
+    @Test
+    void deleteEpisodeNotFoundExceptionTest() {
+        when(podcastEpisodeRepository.existsById(99L)).thenReturn(false);
+
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> {
+            podcastService.deleteEpisode(99L);
+        });
+
+        assertEquals("Эпизод для удаления не найден", exception.getMessage());
+        verify(podcastEpisodeRepository).existsById(99L);
+        verify(podcastEpisodeRepository, never()).deleteById(anyLong());
     }
 
     private PodcastEpisode createPodcastEpisode() {

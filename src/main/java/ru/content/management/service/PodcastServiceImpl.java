@@ -8,6 +8,7 @@ import ru.content.management.dto.PodcastCreateDTO;
 import ru.content.management.dto.PodcastDTO;
 import ru.content.management.dto.PodcastEpisodeCreateDTO;
 import ru.content.management.dto.PodcastEpisodeDTO;
+import ru.content.management.dto.PodcastEpisodeUpdateDTO;
 import ru.content.management.dto.PodcastUpdateDTO;
 import ru.content.management.entity.Podcast;
 import ru.content.management.entity.PodcastEpisode;
@@ -100,5 +101,28 @@ public class PodcastServiceImpl implements PodcastService {
         episode.setPodcastId(podcastId);
 
         return PodcastEpisodeMapper.toDTO(podcastEpisodeRepository.save(episode));
+    }
+
+    @Override
+    public PodcastEpisodeDTO findEpisodeById(Long episodeId) {
+        return podcastEpisodeRepository.findById(episodeId)
+                .map(PodcastEpisodeMapper::toDTO)
+                .orElseThrow(() -> new EntityNotFoundException("Эпизод не найден"));
+    }
+
+    @Override
+    public PodcastEpisodeDTO updateEpisode(Long episodeId, PodcastEpisodeUpdateDTO dto) {
+        PodcastEpisode existing = podcastEpisodeRepository.findById(episodeId)
+                .orElseThrow(() -> new EntityNotFoundException("Эпизод для редактирования не найден"));
+        PodcastEpisodeMapper.updateEntity(dto, existing);
+        return PodcastEpisodeMapper.toDTO(podcastEpisodeRepository.save(existing));
+    }
+
+    @Override
+    public void deleteEpisode(Long episodeId) {
+        if (!podcastEpisodeRepository.existsById(episodeId)) {
+            throw new EntityNotFoundException("Эпизод для удаления не найден");
+        }
+        podcastEpisodeRepository.deleteById(episodeId);
     }
 }
