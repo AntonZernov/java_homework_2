@@ -111,26 +111,4 @@ docker-compose down -v
 ```bash
 mvn clean package
 ```
-
-### Запуск тестов
-
-```bash
-mvn test
-```
-
-### Запуск JAR
-
-```bash
-java -jar target/java-homework-2-0.0.1-SNAPSHOT.jar
-```
-
-## Конфигурация
-
-Конфигурация базы данных находится в `src/main/resources/application.properties`:
-
-```properties
-spring.datasource.url=jdbc:postgresql://postgres-db:5432/content
-spring.datasource.username=admin
-spring.datasource.password=1111
-```
 Для удобства тестирования в БД создан стартовый набор данных.
